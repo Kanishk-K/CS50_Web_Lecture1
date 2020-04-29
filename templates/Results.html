@@ -9,7 +9,7 @@
     <ul>
         {% for result in results %}
             <li>
-                <a href="{{ url_for('Landing', result=result.isbn) }}">
+                <a href="{{ url_for('BookPage', book_isbn=result.isbn)}}">
                     {{result.isbn}}
                 </a>
             </li>

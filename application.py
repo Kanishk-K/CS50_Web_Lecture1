@@ -51,3 +51,8 @@ def Landing():
             return f"{username} we were unable to find any result associated with your search, please try again."
         else:
             return render_template("Results.html", username=username, results=results)
+@app.route("/Landing/<string:book_isbn>", methods=["POST","GET"])
+def BookPage(book_isbn):
+    username = session["Username"]
+    information = db.execute("SELECT * from books WHERE isbn = :isbn",{"isbn" : book_isbn}).fetchone()
+    return render_template("BookPage.html", information=information, username=username)
