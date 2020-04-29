@@ -46,7 +46,7 @@ def Landing():
     else:
         username = session["Username"]
         query = request.form.get("BookInfo")
-        results = db.execute("SELECT isbn from books WHERE isbn LIKE :query OR title LIKE :query OR author LIKE :query",{"query" : f"%{query}%"}).fetchall()
+        results = db.execute("SELECT * from books WHERE isbn LIKE :query OR title LIKE :query OR author LIKE :query",{"query" : f"%{query}%"}).fetchall()
         if len(results)==0:
             return f"{username} we were unable to find any result associated with your search, please try again."
         else:
@@ -54,5 +54,16 @@ def Landing():
 @app.route("/Landing/<string:book_isbn>", methods=["POST","GET"])
 def BookPage(book_isbn):
     username = session["Username"]
+    if db.execute("SELECT * from ratings WHERE username = :username AND isbn = :isbn",{"username":username, "isbn" : book_isbn}).fetchone() == None:
+        usercommented = 0
+    elif db.execute("SELECT * from ratings WHERE username = :username AND isbn = :isbn",{"username":username, "isbn" : book_isbn}).fetchone() != None:
+        usercommented = 1
+    message = request.form.get("Message")
+    rating = request.form.get("Rating")
+    if message != None and rating != None and usercommented == 0:
+        db.execute("INSERT INTO ratings (username,message,rating,isbn) VALUES (:username, :message, :rating, :isbn)",{"username" : username, "message" : message, "rating": rating, "isbn" : book_isbn})
+        db.commit()
+    comments = db.execute("SELECT * from ratings WHERE isbn = :isbn",{"isbn" : book_isbn}).fetchall()
     information = db.execute("SELECT * from books WHERE isbn = :isbn",{"isbn" : book_isbn}).fetchone()
-    return render_template("BookPage.html", information=information, username=username)
+    avgrate = db.execute("SELECT avg(rating) from ratings WHERE isbn = :isbn",{"isbn" : book_isbn}).fetchone()
+    return render_template("BookPage.html", information=information, username=username, comments = comments, usercommented = usercommented, avgrate = avgrate)

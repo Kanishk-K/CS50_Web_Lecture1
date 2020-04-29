@@ -10,7 +10,7 @@
         {% for result in results %}
             <li>
                 <a href="{{ url_for('BookPage', book_isbn=result.isbn)}}">
-                    {{result.isbn}}
+                    [{{ result.isbn}}] {{ result.title }} by {{ result.author }}, publised {{ result.year }}
                 </a>
             </li>
         {% endfor %}
