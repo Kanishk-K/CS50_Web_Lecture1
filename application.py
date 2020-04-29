@@ -29,15 +29,25 @@ def index():
 def Landing():
     username = request.form.get("Username")
     password = request.form.get("Password")
-    print(f"{username} and {password}")
-    if db.execute("SELECT * FROM logins WHERE username = :username", {"username": username}).rowcount == 0:
-        db.execute("INSERT INTO logins (username,password) VALUES (:username, :password)",{"username": username, "password": password})
-        db.commit()
-        return f"Welcome to the Landing Page, we have created your account {username}"
-    elif db.execute("SELECT * FROM logins WHERE username = :username", {"username": username}).rowcount == 1:
-        login = db.execute("SELECT * FROM logins WHERE username = :username", {"username" : username}).fetchall()
-        print(login)
-        if login[0][1] == username and login[0][2] == password:
-            return f"Welcome back to the landing page {username}"
+    if username != None and password != None:
+        if db.execute("SELECT * FROM logins WHERE username = :username", {"username": username}).rowcount == 0:
+            db.execute("INSERT INTO logins (username,password) VALUES (:username, :password)",{"username": username, "password": password})
+            db.commit()
+            session["Username"] = username
+            return render_template("Landing.html", username=username)
+        elif db.execute("SELECT * FROM logins WHERE username = :username", {"username": username}).rowcount == 1:
+            login = db.execute("SELECT * FROM logins WHERE username = :username", {"username" : username}).fetchall()
+            print(login)
+            if login[0][1] == username and login[0][2] == password:
+                return render_template("Landing.html", username=username)
+                session["Username"] = username
+            else:
+                return f"{username} There has been an error, your password does not match your account."
+    else:
+        username = session["Username"]
+        query = request.form.get("BookInfo")
+        results = db.execute("SELECT isbn from books WHERE isbn LIKE :query OR title LIKE :query OR author LIKE :query",{"query" : f"%{query}%"}).fetchall()
+        if len(results)==0:
+            return f"{username} we were unable to find any result associated with your search, please try again."
         else:
-            return f"{username} There has been an error, your password does not match your account."
+            return render_template("Results.html", username=username, results=results)

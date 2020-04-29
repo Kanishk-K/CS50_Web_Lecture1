@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Results
+{% endblock %}
+
+{% block body %}
+    <p>{{ username }}, we found {{ results|length }} matching that search.</p>
+    <ul>
+        {% for result in results %}
+            <li>
+                <a href="{{ url_for('Landing', result=result.isbn) }}">
+                    {{result.isbn}}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
