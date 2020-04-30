@@ -5,7 +5,12 @@
 {% endblock %}
 
 {% block body %}
-    <p>{{ information.title }} by {{ information.author }}, publised {{ information.year }}</p>
+    <div class="row justify-content-between">
+        <p class="col-auto align-self-center">
+            {{ information.title }} by {{ information.author }}, publised {{ information.year }}
+        </p>
+        <a class="btn btn-primary align-self-center" href="{{ url_for('Logout') }}" role="button" style="height: 70%;">Log Out</a>
+    </div>
     {% if usercommnented != 1 %}
     <form action="{{ url_for('BookPage', book_isbn=information.isbn)}}" method="post" autocomplete="off">
         <div class="form-group">

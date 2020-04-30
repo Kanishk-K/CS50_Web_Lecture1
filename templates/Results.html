@@ -5,7 +5,12 @@
 {% endblock %}
 
 {% block body %}
-    <p>{{ username }}, we found {{ results|length }} matching that search.</p>
+    <div class="row justify-content-between">
+        <div class="col-auto alert alert-success align-self-center" role="alert">
+            {{ username }}, we found {{ results|length }} books matching that search.
+        </div>
+        <a class="btn btn-primary align-self-center" href="{{ url_for('Logout') }}" role="button" style="height: 70%;">Log Out</a>
+    </div>
     <ul>
         {% for result in results %}
             <li>
