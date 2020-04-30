@@ -82,8 +82,10 @@ def Landing():
             return render_template("Landing.html",username=session["Username"])
     else:
         return render_template("Error.html",error="This page is inaccessable without an account.")
-@app.route("/Landing/<string:book_isbn>", methods=["POST","GET"])
+@app.route("/Landing/<string:book_isbn>", methods=["GET"])
 def BookPage(book_isbn):
+    if session.get("Username") == None:
+        return render_template("Choose.html")
     username = session["Username"]
     if db.execute("SELECT * from ratings WHERE username = :username AND isbn = :isbn",{"username":username, "isbn" : book_isbn}).fetchone() == None:
         usercommented = 0
