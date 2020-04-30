@@ -1,7 +1,7 @@
 import os
 
 import requests
-from flask import Flask, session, render_template, request, redirect, url_for
+from flask import Flask, session, render_template, request, redirect, url_for, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -107,3 +107,17 @@ def BookPage(book_isbn):
 def Logout():
     session.clear()
     return render_template("Choose.html",LogOut=True)
+@app.route("/api/<string:book_isbn>")
+def BookApi(book_isbn):
+    bookinfo = db.execute("SELECT * from books where isbn = :isbn",{"isbn":book_isbn}).fetchone()
+    bookapi = requests.get("https://www.goodreads.com/book/review_counts.json",params={"key" : "4Uh6xEmtF0dIoI0q7anSg", "isbns": book_isbn}).json()
+    if bookinfo == None:
+        return jsonify({"error": "Invalid book ISBN"}), 404
+    return jsonify({
+        "title": bookinfo["title"],
+        "author": bookinfo["author"],
+        "year": bookinfo["year"],
+        "isbn": book_isbn,
+        "review_count": bookapi["books"][0]["reviews_count"],
+        "average_score": bookapi["books"][0]["average_rating"]
+    })
