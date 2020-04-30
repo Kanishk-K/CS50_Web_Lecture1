@@ -1,5 +1,6 @@
 import os
 
+import requests
 from flask import Flask, session, render_template, request
 from flask_session import Session
 from sqlalchemy import create_engine
@@ -66,4 +67,10 @@ def BookPage(book_isbn):
     comments = db.execute("SELECT * from ratings WHERE isbn = :isbn",{"isbn" : book_isbn}).fetchall()
     information = db.execute("SELECT * from books WHERE isbn = :isbn",{"isbn" : book_isbn}).fetchone()
     avgrate = db.execute("SELECT avg(rating) from ratings WHERE isbn = :isbn",{"isbn" : book_isbn}).fetchone()
-    return render_template("BookPage.html", information=information, username=username, comments = comments, usercommented = usercommented, avgrate = avgrate)
+    bookapi = requests.get("https://www.goodreads.com/book/review_counts.json",params={"key" : "4Uh6xEmtF0dIoI0q7anSg", "isbns": book_isbn})
+    if bookapi.status_code != 200:
+        raise Exception("Error, API call unsuccessful")
+    data = bookapi.json()
+    print(data)
+    bookrating = data["books"][0]["average_rating"]
+    return render_template("BookPage.html", information=information, username=username, comments = comments, usercommented = usercommented, avgrate = avgrate, gbooks = bookrating)

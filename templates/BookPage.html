@@ -23,10 +23,11 @@
     </form>
     {% endif %}
     {% if avgrate[0] == None %}
-    <p>This book has not recieved a rating yet.</p>
+    <p>This book has not recieved a rating yet on our page.</p>
     {% else %}
-    <p>This book was on average rated {{avgrate[0]|float}} by users</p>
+    <p>This book was on average rated {{avgrate[0]|float}} by users on our page.</p>
     {% endif %}
+    <p>This book was rated {{ gbooks }}/5 on goodreads.</p>
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
