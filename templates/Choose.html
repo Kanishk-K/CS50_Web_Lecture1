@@ -1,10 +1,15 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Sign Up
+    Welcome!
 {% endblock %}
 
 {% block body %}
+    {% if LogOut is defined %}
+    <div class="col-auto alert alert-success" role="alert">
+        You have successfully signed out.
+    </div>
+    {% endif %}
     <a class="btn btn-primary btn-lg" href="{{ url_for('SignUp')}}" role="button">Sign Up</a>
     <a class="btn btn-primary btn-lg" href="{{ url_for('LogIn')}}" role="button">Log In</a>
 {% endblock %}

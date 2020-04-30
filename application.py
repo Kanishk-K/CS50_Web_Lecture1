@@ -105,4 +105,5 @@ def BookPage(book_isbn):
     return render_template("BookPage.html", information=information, username=username, comments = comments, usercommented = usercommented, avgrate = avgrate, gbooks = bookrating)
 @app.route("/LogOut")
 def Logout():
-    return "logged out!"
+    session.clear()
+    return render_template("Choose.html",LogOut=True)
