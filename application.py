@@ -100,7 +100,7 @@ def Landing():
     #If the user simply arrives to this page without a post or previous session then inform them that an account is required to access the page.
     else:
         return render_template("Error.html",error="This page is inaccessable without an account.")
-@app.route("/Landing/<string:book_isbn>", methods=["GET"])
+@app.route("/Landing/<string:book_isbn>", methods=["GET","POST"])
 def BookPage(book_isbn):
     #If the user arrives to this link without a username then return them to the choose login page.
     if session.get("Username") == None:
